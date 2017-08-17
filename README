@@ -1,0 +1,59 @@
+to compile type:
+	make
+
+run with:
+	./fswm [options] <sequences> 
+	
+
+<sequence> format:
+	Sequence must be in FASTA format. All genomes must be contained in one FASTA file. Example:
+
+>Genome1
+ATAGTAGATGAT..
+>Genome2
+ATAGTAGTAGTAG..
+>Genome3
+ATGATGATGATGATG..
+..
+
+etc.
+
+
+
+options:
+	 -h: print this help and exit
+	 -k <integer>: pattern weight (default 12)
+	 -t <integer>: numer of threads (default: 10)
+	 -s <integer>: the minimum score of a spaced-word match to be considered homologous (default: 0)
+
+	
+
+
+_______________________________________________________________________________________________________________
+Scientific publications using filtered spaced word matches should cite:
+
+C.-A. Leimeister, S. Sohrabi-Jahromi, B. Morgenstern (2017)
+Fast and Accurate Phylogeny Reconstruction using Filtered Spaced-Word Matches
+Bioinformatics, DOI 10.1093/bioinformatics/btw776 
+_______________________________________________________________________________________________________________
+
+Paper Abstract:
+Motivation: Alignment-free methods are increasingly used for phylogeny reconstruction, since they are
+much faster than traditional alignment-based approaches. Existing alignment-free methods, however, are
+less accurate than methods that are based on multiple sequence alignment.
+Results: We propose Filtered Spaced Word Matches (FSWM), a fast alignment-free approach to estimate
+phylogenetic distances between large genomic sequences. For a pre-defined binary pattern of match and
+don’t-care positions, FSWM rapidly identifies spaced word matches between input sequences, i.e. gap-
+free local alignments with matching nucleotides at the match positions and with mismatches allowed at
+don’t-care positions. We then estimate the number of nucleotide substitutions per site by considereing
+the aligned nucleotides of the don’t-care positions of the identified spaced-word matches. To reduce the
+noise from spurious spaced-word matches, we use a filtering procedure where we discard all spaced-word
+matches for which the overall similarity between the aligned segments is below a threshold. We show that
+our approach can accurately estimate substitution frequencies even for distantly related sequences that
+cannot be analyzed with existing alignment-free methods; phylogenetic trees constructed with FSWM
+distances are of high quality. A program run on a pair of eukaryotic genomes of a few hundred Mb each
+takes a few minutes.
+
+
+contact:
+chris.leimeister@stud.uni-goettingen.de
