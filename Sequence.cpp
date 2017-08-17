@@ -39,8 +39,16 @@ std::vector<Sequence> Sequence::read(std::string fileName)
 	while (!infile.eof())
 	{
 		std::getline(infile, header);
+
+		// extract name from header
+		auto pos = header.find_first_of(" \t\r\n");
+		if (pos == std::string::npos) {
+			pos = header.size();
+		}
+
+		auto name = std::string(header, 0, pos);
 		std::getline(infile, line, '>');
-		sequences.push_back(Sequence(header, line));
+		sequences.push_back(Sequence(name, line));
     }
     return sequences;
 }
