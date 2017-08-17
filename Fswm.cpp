@@ -92,6 +92,7 @@ void writeDmat(std::vector<std::vector<double> > dmat, std::vector<Sequence>& se
 			else
 				outfile << name[k];
 		}
+		outfile << " ";
      	for (int j = 0; j < sequences.size(); j++) 
      	{
 			if (i > j) 
