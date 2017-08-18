@@ -36,7 +36,7 @@ std::vector<Sequence> Sequence::read(std::string fileName)
 	std::string line;
 	std::string header;
 	std::getline(infile, line, '>');
-	while (!infile.eof())
+	while (!infile.eof() && infile.good())
 	{
 		std::getline(infile, header);
 
