@@ -1,4 +1,12 @@
+CXXFLAGS=-ggdb -march=native -O3 -fopenmp
+CPPFLAGS=-Wall -Wextra -std=c++11
 
-all: 
-		g++ -ggdb -Wall -Wextra -march=native -O3 -std=c++11 Bucket.cpp Seed.cpp Fswm.cpp pattern.cpp Sequence.cpp Word.cpp -o fswm -fopenmp
- 
+.PHONY: all clean
+
+all: fswm
+
+fswm: Bucket.o Seed.o Fswm.o pattern.o Sequence.o Word.o
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+clean:
+	rm -f fswm *.o
