@@ -47,9 +47,11 @@ int dontCare = 100;
 int threads = 10;
 int threshold = 0;
 
+static std::string output_file_name = "DMat";
+
 void parseParameters(int argc, char *argv[]){
 	int option_char;
-	 while ((option_char = getopt (argc, argv, "k:t:hs:")) != -1){ 
+	 while ((option_char = getopt (argc, argv, "k:t:hs:o:")) != -1){
 		switch (option_char){ 
 			case 's': 
 				threshold = atoi (optarg); 
@@ -71,6 +73,8 @@ void parseParameters(int argc, char *argv[]){
 			case 'h': 
 				printHelp();
 				exit (EXIT_SUCCESS);
+			case 'o':
+				output_file_name = optarg;
 				break;
 			case '?': 
 				printHelp();		
@@ -80,8 +84,12 @@ void parseParameters(int argc, char *argv[]){
 }
 
 void writeDmat(std::vector<std::vector<double> > dmat, std::vector<Sequence>& sequences){
-	std::ofstream outfile;
-	outfile.open("DMat");
+	std::ofstream regular_outfile;
+	std::ostream &outfile = output_file_name == "-" ? std::cout : regular_outfile;
+	if (output_file_name != "-") {
+		regular_outfile.open(output_file_name);
+	}
+
 	outfile << sequences.size() << std::endl;
 	for (int i = 0; i < sequences.size(); i++) 
 	{
@@ -106,7 +114,9 @@ void writeDmat(std::vector<std::vector<double> > dmat, std::vector<Sequence>& se
 	}
 	
 	//std::cout<< dmat[1][0] << std::endl;
-	outfile.close();
+	if (output_file_name != "-") {
+		regular_outfile.close();
+	}
 }
 
 int main(int argc, char *argv[]){
@@ -124,12 +134,12 @@ int main(int argc, char *argv[]){
 	omp_set_dynamic(0);     
 	omp_set_num_threads(threads);
 	//omp_set_nested(1);
-	std::cout << sequences.size() << " sequences read"<< std::endl;
+	std::cerr << sequences.size() << " sequences read"<< std::endl;
 	if(sequences.size() < 2){
 		std::cerr << "there must be at least 2 sequences"<< std::endl;
 		exit (EXIT_FAILURE);
 	}
-	std::cout << "start sorting"<< std::endl;
+	std::cerr << "start sorting"<< std::endl;
 	#pragma omp parallel for schedule(runtime)
 	for(int i = 0; i < sequences.size();i++)
 	{
@@ -146,7 +156,7 @@ int main(int argc, char *argv[]){
 		sequences[i].sortNextBits(seed);
 		sequences[i].sortNextBitsRev(seed);
 	}
-	std::cout << "starting pairwise distance calculation"<< std::endl;
+	std::cerr << "starting pairwise distance calculation"<< std::endl;
 	int number = (sequences.size()*(sequences.size()-1))/2;
 	int cnt = 1;
 	//#pragma omp parallel for  num_threads(10)
@@ -154,13 +164,13 @@ int main(int argc, char *argv[]){
 	{
 		for(int j = i + 1; j < sequences.size(); j++)
 		{
-			std::cout << cnt++ << "/" << number << "\r";
-			std::cout.flush();
+			std::cerr << cnt++ << "/" << number << "\r";
+			std::cerr.flush();
 			DMat[i][j] = sequences[i].compareSequences(sequences[j], seed, threads, threshold);
 			DMat[j][i] = DMat[i][j];
 		}
 	}
-	std::cout << std::endl << "done" << std::endl;
+	std::cerr << std::endl << "done" << std::endl;
 	writeDmat(DMat, sequences);
-	std::cout << std::endl << "Distances written to file DMat" << std::endl;
+	std::cerr << std::endl << "Distances written to file " << output_file_name << std::endl;
 }
